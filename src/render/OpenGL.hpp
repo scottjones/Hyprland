@@ -336,8 +336,9 @@ namespace Render::GL {
         GLenum                  m_blendDFactor     = GL_ZERO;
 
         std::vector<SDRMFormat> m_drmFormats;
-        bool                    m_hasModifiers  = false;
-        bool                    m_fp16Supported = false;
+        bool                    m_hasModifiers     = false;
+        bool                    m_softwareRenderer = false;
+        bool                    m_fp16Supported    = false;
 
         int                     m_drmFD = -1;
         std::string             m_extensions;

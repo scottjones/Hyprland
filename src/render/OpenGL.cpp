@@ -43,6 +43,7 @@
 #include "pass/PreBlurElement.hpp"
 #include "pass/ClearPassElement.hpp"
 #include "GLRenderer.hpp"
+#include "gl/RendererInfo.hpp"
 #include "Shader.hpp"
 #include "AsyncResourceGatherer.hpp"
 #include <ranges>
@@ -373,7 +374,11 @@ CHyprOpenGLImpl::CHyprOpenGLImpl() : m_drmFD(g_pCompositor->m_drmRenderNode.fd >
     LOG(Log::DEBUG, "Creating the Hypr OpenGL Renderer!");
     LOG(Log::DEBUG, "Using: {}", rc<const char*>(glGetString(GL_VERSION)));
     LOG(Log::DEBUG, "Vendor: {}", rc<const char*>(glGetString(GL_VENDOR)));
-    LOG(Log::DEBUG, "Renderer: {}", rc<const char*>(glGetString(GL_RENDERER)));
+    const auto* rendererName = rc<const char*>(glGetString(GL_RENDERER));
+    RASSERT(rendererName, "Couldn't retrieve the OpenGL renderer name!");
+    // The KMS driver can be display-only; classify the active GL context instead.
+    m_softwareRenderer = isSoftwareRenderer(rendererName);
+    LOG(Log::DEBUG, "Renderer: {} (software: {})", rendererName, m_softwareRenderer);
     LOG(Log::DEBUG, "Supported extensions: ({}) {}", std::ranges::count(m_extensions, ' '), m_extensions);
 
     m_exts.EXT_read_format_bgra        = m_extensions.contains("GL_EXT_read_format_bgra");

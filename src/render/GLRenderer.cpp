@@ -45,6 +45,7 @@ extern "C" {
 }
 
 CHyprGLRenderer::CHyprGLRenderer() : IHyprRenderer(), m_elementRenderer(makeUnique<CGLElementRenderer>()) {
+    m_software = g_pHyprOpenGL->m_softwareRenderer;
     refreshBlurProvider();
     m_preRenderListener = Event::bus()->m_events.render.pre.listen([this](PHLMONITOR monitor) { preRender(monitor); });
 }
